@@ -3,7 +3,7 @@
 	"name": "Snippets Manager",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Snippets manager for obsidian",
+	"description": "Snippets manager with full mobile support. You can manage code snippets, infos like passport number, email signature or anything.",
 	"author": "Venkatraman Dhamodaran",
 	"authorUrl": "https://ramandv.com",
 	"fundingUrl": "https://buymeacoffee.com/ramandv",
