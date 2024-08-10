@@ -14,7 +14,8 @@ The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly in
 
 ## Features
 
-- **Snippet Management:** Store snippets in a markdown file with headings as keys.
+- **Snippet Management:** Store snippets in a markdown file with headings as keys (whether personal details like email signature, passport number, code snippets or anything).
+- **Code Snippets**: The plugin supports code snippets stored in markdown code blocks. When retrieving a code snippet, the plugin automatically strips the backticks, providing you with just the clean code.
 - **Fuzzy Search:** Quickly search through snippets using a fuzzy search interface.
 - **Clipboard Copying:** Copy selected snippets to your clipboard.
 - **Direct Insertion:** Paste snippets directly at the cursor position in the active markdown note.
@@ -47,14 +48,21 @@ The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly in
    - In this file, each snippet should be under a heading (`### Heading`), where the heading is the snippet's title, and the content under the heading is the snippet itself.
 
    Example:
-   ```markdown
-   ### Greeting
-   Hello, how are you doing today?
+````markdown
+### Greeting
+Hello, how are you doing today?
 
-   ### Signature
-   Best regards,
-   [Your Name]
-   ```
+### Signature
+Best regards,
+[Your Name]
+
+### Hello World
+```js
+helloworld() {
+console.log("Hello World!!!"); 
+}
+```
+````
 
 2. **Configure the Snippet File:**
    - In Obsidian, go to `Settings` > `Snippets Manager`.
