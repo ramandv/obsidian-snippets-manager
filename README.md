@@ -20,6 +20,7 @@ The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly in
 - **Clipboard Copying:** Copy selected snippets to your clipboard.
 - **Direct Insertion:** Paste snippets directly at the cursor position in the active markdown note.
 - **Configurable Snippet File:** Choose which markdown file to use for storing and managing snippets.
+- **Mobile Support:** The plugin is fully compatible with Obsidian's mobile app. You can easily create a shortcut to the Snippet Search using the Advanced URI plugin, making it even more convenient to search and copy snippets on the go.
 
 ## Installation
 
