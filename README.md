@@ -1,96 +1,117 @@
-# Obsidian Sample Plugin
+I work on the plugin in my spare time, and I appreciate any kind of support!
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+✨ [Check out latest updates](https://github.com/ramandv/obsidian-snippets-manager/releases)<br>
+🪲 [Report bugs and suggest features](https://github.com/ramandv/obsidian-snippets-manager/issues)<br>
+❓ [Ask questions](https://github.com/ramandv/obsidian-snippets-manager/discussions/new?category=q-a)<br>
+👍 [Give thumbs up to issues important to you](https://github.com/ramandv/obsidian-snippets-manager/issues)<br>
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+# Snippets Manager Plugin for Obsidian
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+## Overview
 
-## First time developing plugins?
+The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly insert text snippets stored in a markdown file. This plugin enhances your workflow by enabling fuzzy search for snippets, allowing you to copy them to your clipboard or directly paste them at the cursor position in your active note.
 
-Quick starting guide for new plugin devs:
+## Features
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+- **Snippet Management:** Store snippets in a markdown file with headings as keys.
+- **Fuzzy Search:** Quickly search through snippets using a fuzzy search interface.
+- **Clipboard Copying:** Copy selected snippets to your clipboard.
+- **Direct Insertion:** Paste snippets directly at the cursor position in the active markdown note.
+- **Configurable Snippet File:** Choose which markdown file to use for storing and managing snippets.
 
-## Releasing new releases
+## Installation
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+1. **Manual Installation:**
+   - Download or clone this repository.
+   - Build the plugin by running the following command:
+     ```bash
+     npm install
+     npm run build
+     ```
+   - Copy the contents of the `dist` folder into your Obsidian plugins directory: `your-vault/.obsidian/plugins/snippet-manager`.
+   - Enable the plugin from the Obsidian Settings under `Community Plugins`.
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+2. **Obsidian Community Plugins:**
+   - This plugin may also be available in the Obsidian community plugins list. If so, you can install it directly from Obsidian:
+     - Go to `Settings` > `Community Plugins` > `Browse`.
+     - Search for `Snippets Manager`.
+     - Click `Install` and then `Enable`.
 
-## Adding your plugin to the community plugin list
+## Usage
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+### Setting Up Snippets
 
-## How to use
+1. **Create a Snippet File:**
+   - Create a markdown file in your vault where you’ll store your snippets (e.g., `Snippets.md`).
+   - In this file, each snippet should be under a heading (`### Heading`), where the heading is the snippet's title, and the content under the heading is the snippet itself.
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+   Example:
+   ```markdown
+   ### Greeting
+   Hello, how are you doing today?
 
-## Manually installing the plugin
+   ### Signature
+   Best regards,
+   [Your Name]
+   ```
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+2. **Configure the Snippet File:**
+   - In Obsidian, go to `Settings` > `Snippets Manager`.
+   - Set the path to your snippet file (e.g., `Snippets.md`).
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
+### Using Snippets Manager
 
-## Funding URL
+1. **Search and Insert Snippets:**
+   - Use the command palette (CMD/CTRL + P) and search for `Search Snippets`.
+   - A fuzzy search modal will appear, allowing you to search for your snippets by their headings.
+   - Press `Enter` to copy the snippet to your clipboard.
+   - Press `CMD/CTRL + Enter` to paste the snippet directly at the cursor position in the active note.
 
-You can include funding URLs where people who use your plugin can financially support it.
+2. **Keyboard Shortcuts:**
+   - `Enter`: Copy the selected snippet to the clipboard.
+   - `CMD/CTRL + Enter`: Copy the selected snippet to the clipboard and paste it at the cursor position in the active note.
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+## Configuration
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
+- **Snippet File Path:**
+  - Configure the path to the markdown file where your snippets are stored.
+  - You can do this in the `Settings` > `Snippets Manager` section of Obsidian.
 
-If you have multiple URLs, you can also do:
+## Development
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+### Requirements
 
-## API Documentation
+- Node.js and npm
+- TypeScript
 
-See https://github.com/obsidianmd/obsidian-api
+### Building the Plugin
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-repo/snippet-manager
+   cd snippet-manager
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Build the plugin:**
+   ```bash
+   npm run build
+   ```
+
+4. **Develop with live reload:**
+   ```bash
+   npm run dev
+   ```
+
+### Contributing
+
+Contributions are welcome! If you have any bug reports, feature requests, or code improvements, feel free to open an issue or submit a pull request.
+
+### License
+
+This plugin is open-source software licensed under the MIT License.
