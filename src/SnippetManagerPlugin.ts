@@ -16,8 +16,6 @@ export default class SnippetManagerPlugin extends Plugin {
     lastModifiedTime: number | null = null;
 
     async onload() {
-        console.log("Snippet Manager Plugin loaded");
-
         // Load settings
         await this.loadSettings();
 
@@ -42,18 +40,12 @@ export default class SnippetManagerPlugin extends Plugin {
             const fileStat = await this.app.vault.adapter.stat(file.path);
             const modifiedTime = fileStat?.mtime;
 
-            console.log(`Current file modified time: ${modifiedTime}`);
-            console.log(`Last known modified time: ${this.lastModifiedTime}`);
-
             if (file instanceof TFile && modifiedTime && 
                 (this.lastModifiedTime === null || modifiedTime > this.lastModifiedTime)) {
                 const content = await this.app.vault.read(file);
                 this.snippets = this.parseMarkdownFile(content);
                 this.lastModifiedTime = modifiedTime;
-                console.log('Snippets have been reloaded.');
                 new Notice(`Snippets reloaded from: ${filePath}`);
-            } else {
-                console.log('No need to reload snippets. The file has not been modified since last load.');
             }
         } else {
             new Notice(`Snippet file not found at: ${filePath}`);
