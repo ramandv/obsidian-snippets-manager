@@ -6,11 +6,15 @@ I work on the plugin in my spare time, and I appreciate any kind of support!
 👍 [Give thumbs up to issues important to you](https://github.com/ramandv/obsidian-snippets-manager/issues)<br>
 
 
+
 # Snippets Manager Plugin for Obsidian
 
 ## Overview
 
 The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly insert text snippets stored in a markdown file. This plugin enhances your workflow by enabling fuzzy search for snippets, allowing you to copy them to your clipboard or directly paste them at the cursor position in your active note.
+![Obsidian Snippet Manager](https://github.com/user-attachments/assets/4e1cce8c-ca38-47a7-9f3e-42f0e9fa158f)
+
+
 
 ## Features
 
