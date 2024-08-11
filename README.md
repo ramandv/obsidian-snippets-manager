@@ -28,21 +28,11 @@ The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly in
 
 ## Installation
 
-1. **Manual Installation:**
-   - Download or clone this repository.
-   - Build the plugin by running the following command:
-     ```bash
-     npm install
-     npm run build
-     ```
-   - Copy the contents of the `dist` folder into your Obsidian plugins directory: `your-vault/.obsidian/plugins/snippet-manager`.
-   - Enable the plugin from the Obsidian Settings under `Community Plugins`.
-
-2. **Obsidian Community Plugins:**
-   - This plugin may also be available in the Obsidian community plugins list. If so, you can install it directly from Obsidian:
-     - Go to `Settings` > `Community Plugins` > `Browse`.
-     - Search for `Snippets Manager`.
-     - Click `Install` and then `Enable`.
+- **Obsidian Community Plugins:**
+	- This plugin will  be available in the Obsidian community plugins list. If so, you can install it directly from Obsidian:
+	 - Go to `Settings` > `Community Plugins` > `Browse`.
+	 - Search for `Snippets Manager`.
+	 - Click `Install` and then `Enable`.
 
 ## Usage
 
