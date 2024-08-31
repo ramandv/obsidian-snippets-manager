@@ -1,4 +1,4 @@
-import { Plugin, Notice, TFile } from 'obsidian';
+import { Plugin, Notice, TFile, MetadataCache, CachedMetadata } from 'obsidian';
 import SnippetSuggestModal from './SnippetSuggestModal';
 import SnippetManagerSettingTab from './SnippetManagerSettingTab';
 
@@ -42,8 +42,9 @@ export default class SnippetManagerPlugin extends Plugin {
 
             if (file instanceof TFile && modifiedTime && 
                 (this.lastModifiedTime === null || modifiedTime > this.lastModifiedTime)) {
-                const content = await this.app.vault.read(file);
-                this.snippets = this.parseMarkdownFile(content);
+                const content = await this.app.vault.cachedRead(file);
+                const contentCache = this.app.metadataCache.getFileCache(file);
+                this.snippets = this.getSnippets(content,contentCache);
                 this.lastModifiedTime = modifiedTime;
                 new Notice(`Snippets reloaded from: ${filePath}`);
             }
@@ -52,31 +53,37 @@ export default class SnippetManagerPlugin extends Plugin {
         }
     }
 
-    parseMarkdownFile(content: string): Record<string, string> {
-        const keyValuePairs: Record<string, string> = {};
-        const md = content.split('\n');
-        let currentKey: string | null = null;
-        let currentValue: string[] = [];
-
-        md.forEach(line => {
-            if (line.startsWith('### ')) {
-                if (currentKey) {
-                    keyValuePairs[currentKey] = currentValue.join('\n').trim();
-                }
-                currentKey = line.substring(4).trim();
-                currentValue = [];
-            } else {
-                if (!line.startsWith('```')) {
-                    currentValue.push(line);
-                }
-            }
-        });
-
-        if (currentKey) {
-            keyValuePairs[currentKey] = currentValue.join('\n').trim();
+    getSnippets(content:string, contentCache:CachedMetadata): Record<string, string> {
+        const snippets: Record<string, string> = {};
+        if (!contentCache.headings) {
+            return snippets; // No headings found, return empty snippets
         }
 
-        return keyValuePairs;
+        const headings = contentCache.headings;
+        const level = headings[0].level;
+
+        for (let i = 0; i < headings.length; i++) {
+            if(headings[i].level != level) {
+                new Notice(`Please follow same heading level throughout the file`);
+                return snippets;
+            }
+        }
+
+        for (let i = 0; i < headings.length; i++) {
+            const currentHeading = headings[i];
+            if(i+1 == headings.length) {
+                snippets[currentHeading.heading] = content.slice(
+                    currentHeading.position.end.offset+1).trim();
+            }
+            else {
+                const nextHeading = headings[i + 1];
+                // Store the section content with the heading as the key
+                snippets[currentHeading.heading] = content.slice(
+                    currentHeading.position.end.offset+1, 
+                    nextHeading.position.start.offset-1).trim();
+            }
+        }
+        return snippets;
     }
 
     async loadSettings() {
