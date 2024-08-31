@@ -15,6 +15,7 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
             if (evt.isComposing) {
 				return;
 			}
+            // @ts-ignore
             this.chooser.useSelectedItem(evt);
             return false;
         })

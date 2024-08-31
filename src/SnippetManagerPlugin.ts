@@ -54,9 +54,9 @@ export default class SnippetManagerPlugin extends Plugin {
         }
     }
 
-    getSnippets(content:string, contentCache:CachedMetadata): Record<string, string> {
+    getSnippets(content:string, contentCache:CachedMetadata|null): Record<string, string> {
         const snippets: Record<string, string> = {};
-        if (!contentCache.headings) {
+        if (!contentCache?.headings) {
             return snippets; // No headings found, return empty snippets
         }
 
