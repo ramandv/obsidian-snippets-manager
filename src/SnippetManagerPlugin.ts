@@ -84,7 +84,36 @@ export default class SnippetManagerPlugin extends Plugin {
                     nextHeading.position.start.offset-1).trim();
             }
         }
+
+        for (let i = 0; i < headings.length; i++) {
+            const currentHeading = headings[i];
+            let sectionContent = '';
+    
+            if (i + 1 === headings.length) {
+                sectionContent = content.slice(currentHeading.position.end.offset + 1);
+            } else {
+                const nextHeading = headings[i + 1];
+                sectionContent = content.slice(
+                    currentHeading.position.end.offset + 1,
+                    nextHeading.position.start.offset - 1
+                );
+            }
+    
+            // Remove code block formatting
+            sectionContent = this.stripCodeBlockFormatting(sectionContent).trim();
+    
+            // Store the section content with the heading as the key
+            snippets[currentHeading.heading] = sectionContent;
+        }
+
         return snippets;
+    }
+
+    stripCodeBlockFormatting(content: string): string {
+        return content.replace(/```[\s\S]*?```/g, (match) => {
+            // Remove the starting and ending backticks, and any language identifier
+            return match.replace(/```(\w+)?\n?/, '').replace(/\n?```$/, '');
+        });
     }
 
     async loadSettings() {
