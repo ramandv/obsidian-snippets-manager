@@ -9,7 +9,13 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
         super(app);
         this.plugin = plugin;
         this.refreshSnippets();
-        this.inputEl.addEventListener('keydown', this.onKeydown.bind(this));
+        this.scope.register(['Mod'], 'Enter', (evt: KeyboardEvent) => {
+            if (evt.isComposing) {
+				return;
+			}
+            this.chooser.useSelectedItem(evt);
+            return false;
+        })
         this.setPlaceholder("Search snippets...");
     }
 
@@ -38,25 +44,12 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
         }
     }
 
-    onKeydown(evt: KeyboardEvent) {
-        if ((evt.metaKey || evt.ctrlKey) && evt.key === 'Enter') {
-            evt.preventDefault();
-            const selectedItem = this.resultContainerEl.querySelector('.suggestion-item.is-selected');
-            if (selectedItem) {
-                const itemText = selectedItem.textContent!;
-                this.onChooseItem(itemText, evt);
-                this.close();
-            }
-        }
-    }
-
     insertSnippetAtCursor(value: string) {
         const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-        
         if (view) {
             const editor = view.editor; // Access the CodeMirror editor
             editor.replaceSelection(value);
-            new Notice(`Pasted snippet at cursor: ${value}`);
+            // new Notice(`Pasted snippet at cursor: ${value}`);
         } else {
             new Notice("Active view is not a markdown editor. Snippet was copied to clipboard.");
         }
