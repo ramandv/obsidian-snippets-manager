@@ -26,8 +26,8 @@ export default class SnippetManagerPlugin extends Plugin {
         this.addCommand({
             id: 'open-snippet-search',
             name: 'Search Snippets',
-            callback: () => {
-                new SnippetSuggestModal(this.app, this).open();
+            editorCallback: (editor, view) => {
+                new SnippetSuggestModal(this.app, this, editor).open();
             }
         });
     }
@@ -45,6 +45,7 @@ export default class SnippetManagerPlugin extends Plugin {
                 const content = await this.app.vault.cachedRead(file);
                 const contentCache = this.app.metadataCache.getFileCache(file);
                 this.snippets = this.getSnippets(content,contentCache);
+
                 this.lastModifiedTime = modifiedTime;
                 new Notice(`Snippets reloaded from: ${filePath}`);
             }

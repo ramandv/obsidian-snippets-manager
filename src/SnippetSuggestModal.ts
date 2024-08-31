@@ -1,13 +1,15 @@
-import { FuzzySuggestModal, MarkdownView, Notice } from 'obsidian';
+import { Editor, FuzzySuggestModal, MarkdownView, Notice } from 'obsidian';
 import SnippetManagerPlugin from './SnippetManagerPlugin';
 
 export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
     plugin: SnippetManagerPlugin;
     items: Record<string, string> = {};
+    editor: Editor;
 
-    constructor(app: any, plugin: SnippetManagerPlugin) {
+    constructor(app: any, plugin: SnippetManagerPlugin, editor: Editor ) {
         super(app);
         this.plugin = plugin;
+        this.editor = editor;
         this.refreshSnippets();
         this.scope.register(['Mod'], 'Enter', (evt: KeyboardEvent) => {
             if (evt.isComposing) {
@@ -45,10 +47,8 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
     }
 
     insertSnippetAtCursor(value: string) {
-        const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-        if (view) {
-            const editor = view.editor; // Access the CodeMirror editor
-            editor.replaceSelection(value);
+        if (this.editor) {
+            this.editor.replaceSelection(value);
             // new Notice(`Pasted snippet at cursor: ${value}`);
         } else {
             new Notice("Active view is not a markdown editor. Snippet was copied to clipboard.");
