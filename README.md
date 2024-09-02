@@ -1,11 +1,3 @@
-I work on the plugin in my spare time, and I appreciate any kind of support!
-
-✨ [Check out latest updates](https://github.com/ramandv/obsidian-snippets-manager/releases)<br>
-🪲 [Report bugs and suggest features](https://github.com/ramandv/obsidian-snippets-manager/issues)<br>
-❓ [Ask questions](https://github.com/ramandv/obsidian-snippets-manager/discussions/new?category=q-a)<br>
-👍 [Give thumbs up to issues important to you](https://github.com/ramandv/obsidian-snippets-manager/issues)<br>
-
-
 
 # Snippets Manager Plugin for Obsidian
 
@@ -16,6 +8,20 @@ The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly in
 ![Obsidian Snippet Manager](https://github.com/user-attachments/assets/95f10833-faff-4313-8263-89dae134c60b)
 
 
+## Usecases
+
+### Mobile Use:
+I use Snippet Manager to quickly copy things like addresses, map locations, URLs, and quotes. With the help of the "[Website shortcut](https://play.google.com/store/apps/details?id=com.deltacdev.websiteshortcut&hl=en_IN)" Android app and the [Obsidian Advanced URI plugin](https://github.com/Vinzent03/obsidian-advanced-uri), I’ve set up a shortcut directly to the snippet search modal. Now, with just one click, I can copy whatever I need to my clipboard and paste it anywhere on my phone.
+
+
+### Desktop Use:
+On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. I’ve stored a bunch of prompts from [Awesome ChatGPT Prompts](https://github.com/f/awesome-chatgpt-prompts), and with Snippet Manager, I can quickly find and copy the one I need.
+
+
+✨ [Check out latest updates](https://github.com/ramandv/obsidian-snippets-manager/releases)<br>
+🪲 [Report bugs and suggest features](https://github.com/ramandv/obsidian-snippets-manager/issues)<br>
+❓ [Ask questions](https://github.com/ramandv/obsidian-snippets-manager/discussions/new?category=q-a)<br>
+👍 [Give thumbs up to issues important to you](https://github.com/ramandv/obsidian-snippets-manager/issues)<br>
 
 
 ## Features
