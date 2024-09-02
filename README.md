@@ -10,8 +10,8 @@ The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly in
 
 ## Usecases
 
-### I already use Text Expander kind of apps or plugins:
-But does it work on your mobile? In most of the cases, that might be the case. But this plugin will work on your mobile too.
+### Do i need this plugin if i already you Text Expander kind of apps?
+Yes, you need it. In most of the cases, those apps will be available only for desktops. But this plugin will work on your mobile too.
 
 ### Mobile Use:
 I use Snippet Manager to quickly copy things like addresses, map locations, URLs, and quotes. With the help of the "[Website shortcut](https://play.google.com/store/apps/details?id=com.deltacdev.websiteshortcut&hl=en_IN)" Android app and the [Obsidian Advanced URI plugin](https://github.com/Vinzent03/obsidian-advanced-uri), I’ve set up a shortcut directly to the snippet search modal. Now, with just one click, I can copy whatever I need to my clipboard and paste it anywhere on my phone.
