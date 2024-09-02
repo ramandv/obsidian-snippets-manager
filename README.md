@@ -1,5 +1,5 @@
 
-# Snippets Manager Plugin for Obsidian
+# Snippets Manager - Text Expansion Plugin for Obsidian
 
 ## Overview
 
@@ -9,6 +9,9 @@ The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly in
 
 
 ## Usecases
+
+### I already use Text Expander kind of apps or plugins:
+But does it work on your mobile? In most of the cases, that might be the case. But this plugin will work on your mobile too.
 
 ### Mobile Use:
 I use Snippet Manager to quickly copy things like addresses, map locations, URLs, and quotes. With the help of the "[Website shortcut](https://play.google.com/store/apps/details?id=com.deltacdev.websiteshortcut&hl=en_IN)" Android app and the [Obsidian Advanced URI plugin](https://github.com/Vinzent03/obsidian-advanced-uri), I’ve set up a shortcut directly to the snippet search modal. Now, with just one click, I can copy whatever I need to my clipboard and paste it anywhere on my phone.
@@ -50,7 +53,7 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. I�
 ### Setting Up Snippets
 
 1. **Create a Snippet File:**
-   - Create a markdown file in your vault where you’ll store your snippets (e.g., `Snippets.md`).
+   - Create a markdown file in your vault where you’ll store your snippets (e.g., `**S**nippets.md`).
    - In this file, each snippet should be under a heading (`### Heading`), where the heading is the snippet's title, and the content under the heading is the snippet itself.
 
    Example:
