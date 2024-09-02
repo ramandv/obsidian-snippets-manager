@@ -53,7 +53,7 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. I�
 ### Setting Up Snippets
 
 1. **Create a Snippet File:**
-   - Create a markdown file in your vault where you’ll store your snippets (e.g., `**S**nippets.md`).
+   - Create a markdown file in your vault where you’ll store your snippets (e.g., **S**nippets.md ).
    - In this file, each snippet should be under a heading (`### Heading`), where the heading is the snippet's title, and the content under the heading is the snippet itself.
 
    Example:
@@ -75,7 +75,7 @@ console.log("Hello World!!!");
 
 2. **Configure the Snippet File:**
    - In Obsidian, go to `Settings` > `Snippets Manager`.
-   - Set the path to your snippet file (e.g., `Snippets.md`).
+   - Set the path to your snippet file (e.g., **S**nippets.md).
 
 ### Using Snippets Manager
 
