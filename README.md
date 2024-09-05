@@ -16,6 +16,10 @@ Yes, you need it. In most of the cases, those apps will be available only for de
 ### Mobile Use:
 I use Snippet Manager to quickly copy things like addresses, map locations, URLs, and quotes. With the help of the "[Website shortcut](https://play.google.com/store/apps/details?id=com.deltacdev.websiteshortcut&hl=en_IN)" Android app and the [Obsidian Advanced URI plugin](https://github.com/Vinzent03/obsidian-advanced-uri), I’ve set up a shortcut directly to the snippet search modal. Now, with just one click, I can copy whatever I need to my clipboard and paste it anywhere on my phone.
 
+Example Advanced URI link for Obsidian. You can create the link to the URL. [Replace your vault name accordingly]
+```
+obsidian://advanced-uri?vault=<your-vaultname>&commandid=snippets-manager%3Aopen-snippet-search
+```
 
 ### Desktop Use:
 On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. I’ve stored a bunch of prompts from [Awesome ChatGPT Prompts](https://github.com/f/awesome-chatgpt-prompts), and with Snippet Manager, I can quickly find and copy the one I need.
