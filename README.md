@@ -32,7 +32,7 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. Iâ€
 - **Fuzzy Search:** Quickly search through snippets using a fuzzy search interface.
 - **Clipboard Copying:** Copy selected snippets to your clipboard.
 - **Direct Insertion:** Paste snippets directly at the cursor position in the active markdown note.
-- **Configurable Snippet File:** Choose which markdown file to use for storing and managing snippets.
+- **Configurable Snippet Location:** Choose a markdown file or folder to store your snippets.
 - **Mobile Support:** The plugin is fully compatible with Obsidian's mobile app. You can easily create a shortcut to the Snippet Search using the Advanced URI plugin, making it even more convenient to search and copy snippets on the go.
 
 ## Links
@@ -56,11 +56,15 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. Iâ€
 
 ### Setting Up Snippets
 
-1. **Create a Snippet File:**
-   - Create a markdown file in your vault where youâ€™ll store your snippets (e.g., **S**nippets.md ).
-   - In this file, each snippet should be under a heading (`### Heading`), where the heading is the snippet's title, and the content under the heading is the snippet itself.
+1. **Single File or Folder Setup:**
 
-   Example:
+You can store snippets in a single markdown file (e.g., Snippets.md) or in multiple markdown files within a folder (e.g., Snippets/
+
+2. **Markdown Snippet Structure:**
+
+- Each snippet should be stored under a heading (### Heading), with the content under the heading representing the snippet.
+- Example in a single file:
+
 ````markdown
 ### Greeting
 Hello, how are you doing today?
@@ -77,9 +81,14 @@ console.log("Hello World!!!");
 ```
 ````
 
+- Example with multiple files:
+
+  - Snippets/Email.md (with headings for email templates)
+  - Snippets/Code.md (with headings for code snippets)
+
 2. **Configure the Snippet File:**
    - In Obsidian, go to `Settings` > `Snippets Manager`.
-   - Set the path to your snippet file (e.g., **S**nippets.md).
+   - Set the path to your snippet file (e.g., Snippets.md) or folder (e.g., Snippets/).
 
 ### Using Snippets Manager
 
@@ -93,11 +102,6 @@ console.log("Hello World!!!");
    - `Enter`: Copy the selected snippet to the clipboard.
    - `CMD/CTRL + Enter`: Copy the selected snippet to the clipboard and paste it at the cursor position in the active note.
 
-## Configuration
-
-- **Snippet File Path:**
-  - Configure the path to the markdown file where your snippets are stored.
-  - You can do this in the `Settings` > `Snippets Manager` section of Obsidian.
 
 ## Development
 
