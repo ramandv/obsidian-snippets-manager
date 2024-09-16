@@ -23,7 +23,7 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
     }
 
     async refreshSnippets() {
-        await this.plugin.loadSnippetsFromFile();
+        await this.plugin.loadSnippets();
         this.items = this.plugin.snippets;
         // this.updateSuggestions(Object.keys(this.items));
     }

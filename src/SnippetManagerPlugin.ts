@@ -1,19 +1,19 @@
-import { Plugin, Notice, TFile, MetadataCache, CachedMetadata } from 'obsidian';
+import { Plugin, Notice, TFile, TFolder, CachedMetadata } from 'obsidian';
 import SnippetSuggestModal from './SnippetSuggestModal';
 import SnippetManagerSettingTab from './SnippetManagerSettingTab';
 
 export interface SnippetManagerSettings {
-    snippetFilePath: string;
+    snippetPath: string; // Can be either a file or a directory
 }
 
 const DEFAULT_SETTINGS: SnippetManagerSettings = {
-    snippetFilePath: "Snippets.md"
+    snippetPath: "Snippets.md" // Default to single file for backward compatibility
 };
 
 export default class SnippetManagerPlugin extends Plugin {
     settings: SnippetManagerSettings;
     snippets: Record<string, string> = {};
-    lastModifiedTime: number | null = null;
+    lastModifiedTimes: Record<string, number> = {}; // Track modified times for multiple files
 
     async onload() {
         // Load settings
@@ -32,30 +32,52 @@ export default class SnippetManagerPlugin extends Plugin {
         });
     }
 
-    async loadSnippetsFromFile() {
-        const filePath = this.settings.snippetFilePath;
-        const file = this.app.vault.getAbstractFileByPath(filePath);
+    async loadSnippets() {
+        const snippetPath = this.settings.snippetPath;
+        const fileOrFolder = this.app.vault.getAbstractFileByPath(snippetPath);
 
-        if (file instanceof TFile && file.extension === 'md') {
-            const fileStat = await this.app.vault.adapter.stat(file.path);
-            const modifiedTime = fileStat?.mtime;
+        if (!fileOrFolder) {
+            new Notice(`Snippet path not found: ${snippetPath}`);
+            return;
+        }
 
-            if (file instanceof TFile && modifiedTime && 
-                (this.lastModifiedTime === null || modifiedTime > this.lastModifiedTime)) {
-                const content = await this.app.vault.cachedRead(file);
-                const contentCache = this.app.metadataCache.getFileCache(file);
-                this.snippets = this.getSnippets(content,contentCache);
-
-                this.lastModifiedTime = modifiedTime;
-                new Notice(`Snippets reloaded from: ${filePath}`);
+        if (fileOrFolder instanceof TFolder) {
+            // Handle directory: load snippets from all markdown files in the folder
+            for (let file of fileOrFolder.children) {
+                if (file instanceof TFile && file.extension === 'md') {
+                    await this.loadSnippetsFromFile(file);
+                }
             }
+        } else if (fileOrFolder instanceof TFile && fileOrFolder.extension === 'md') {
+            // Handle single file
+            await this.loadSnippetsFromFile(fileOrFolder);
         } else {
-            new Notice(`Snippet file not found at: ${filePath}`);
+            new Notice(`Invalid snippet path: ${snippetPath}`);
         }
     }
 
-    getSnippets(content:string, contentCache:CachedMetadata|null): Record<string, string> {
+    async loadSnippetsFromFile(file: TFile) {
+        const filePath = file.path;
+        const fileStat = await this.app.vault.adapter.stat(filePath);
+        const modifiedTime = fileStat?.mtime;
+
+        // Check if the file has been modified since the last load
+        if (modifiedTime && (!this.lastModifiedTimes[filePath] || modifiedTime > this.lastModifiedTimes[filePath])) {
+            const content = await this.app.vault.cachedRead(file);
+            const contentCache = this.app.metadataCache.getFileCache(file);
+
+            // Merge snippets from this file into the global snippets
+            Object.assign(this.snippets, this.getSnippets(content, contentCache));
+
+            this.lastModifiedTimes[filePath] = modifiedTime;
+            new Notice(`Snippets reloaded from: ${filePath}`);
+        }
+    }
+
+
+    getSnippets(content: string, contentCache: CachedMetadata | null): Record<string, string> {
         const snippets: Record<string, string> = {};
+
         if (!contentCache?.headings) {
             return snippets; // No headings found, return empty snippets
         }
@@ -63,32 +85,19 @@ export default class SnippetManagerPlugin extends Plugin {
         const headings = contentCache.headings;
         const level = headings[0].level;
 
+        // Ensure all headings are at the same level
         for (let i = 0; i < headings.length; i++) {
-            if(headings[i].level != level) {
-                new Notice(`Please follow same heading level throughout the file`);
+            if (headings[i].level !== level) {
+                new Notice(`Please follow the same heading level throughout the file`);
                 return snippets;
             }
         }
 
-        for (let i = 0; i < headings.length; i++) {
-            const currentHeading = headings[i];
-            if(i+1 == headings.length) {
-                snippets[currentHeading.heading] = content.slice(
-                    currentHeading.position.end.offset+1).trim();
-            }
-            else {
-                const nextHeading = headings[i + 1];
-                // Store the section content with the heading as the key
-                snippets[currentHeading.heading] = content.slice(
-                    currentHeading.position.end.offset+1, 
-                    nextHeading.position.start.offset-1).trim();
-            }
-        }
-
+        // Iterate over headings and capture content
         for (let i = 0; i < headings.length; i++) {
             const currentHeading = headings[i];
             let sectionContent = '';
-    
+
             if (i + 1 === headings.length) {
                 sectionContent = content.slice(currentHeading.position.end.offset + 1);
             } else {
@@ -98,10 +107,10 @@ export default class SnippetManagerPlugin extends Plugin {
                     nextHeading.position.start.offset - 1
                 );
             }
-    
+
             // Remove code block formatting
             sectionContent = this.stripCodeBlockFormatting(sectionContent).trim();
-    
+
             // Store the section content with the heading as the key
             snippets[currentHeading.heading] = sectionContent;
         }

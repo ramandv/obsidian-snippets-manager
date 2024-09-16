@@ -14,15 +14,15 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
         containerEl.empty();
 
         new Setting(containerEl)
-            .setName('Snippets file path')
-            .setDesc('Path to the markdown file where snippets are stored.')
+            .setName('Snippets file path or Snippets folder path')
+            .setDesc('Path to the markdown file where snippets are stored. or Path to Folder which contains multiple Snippets file')
             .addText(text => text
-                .setPlaceholder('Enter snippet file path')
-                .setValue(this.plugin.settings.snippetFilePath)
+                .setPlaceholder('Snippets.md')
+                .setValue(this.plugin.settings.snippetPath)
                 .onChange(async (value) => {
-                    this.plugin.settings.snippetFilePath = value;
+                    this.plugin.settings.snippetPath = value;
                     await this.plugin.saveSettings();
-                    await this.plugin.loadSnippetsFromFile();
+                    await this.plugin.loadSnippets();
                 }));
     }
 }
