@@ -20,6 +20,10 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                 .setPlaceholder('Snippets.md')
                 .setValue(this.plugin.settings.snippetPath)
                 .onChange(async (value) => {
+                    // Remove trailing slash if it exists
+                    if (value.endsWith('/')) {
+                        value = value.slice(0, -1); 
+                    }
                     this.plugin.settings.snippetPath = value;
                     await this.plugin.saveSettings();
                     this.plugin.clearSnippets();
