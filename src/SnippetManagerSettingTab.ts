@@ -22,7 +22,6 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                 .onChange(async (value) => {
                     this.plugin.settings.snippetPath = value;
                     await this.plugin.saveSettings();
-                    await this.plugin.loadSnippets();
                 }));
     }
 }

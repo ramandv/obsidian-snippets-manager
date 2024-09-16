@@ -32,6 +32,11 @@ export default class SnippetManagerPlugin extends Plugin {
         });
     }
 
+    clearSnippets() {
+        this.snippets = {};
+        this.lastModifiedTimes = {};
+    }
+
     async loadSnippets() {
         const snippetPath = this.settings.snippetPath;
         const fileOrFolder = this.app.vault.getAbstractFileByPath(snippetPath);
@@ -42,21 +47,28 @@ export default class SnippetManagerPlugin extends Plugin {
         }
 
         if (fileOrFolder instanceof TFolder) {
+            // Check if the folder contains more than one file
+            const markdownFiles = fileOrFolder.children.filter(
+                (file) => file instanceof TFile && file.extension === 'md'
+            );
+
+            const addFilePrefix = markdownFiles.length > 1;
+
             // Handle directory: load snippets from all markdown files in the folder
-            for (let file of fileOrFolder.children) {
-                if (file instanceof TFile && file.extension === 'md') {
-                    await this.loadSnippetsFromFile(file);
+            for (let file of markdownFiles) {
+                if (file instanceof TFile) {
+                    await this.loadSnippetsFromFile(file, addFilePrefix);
                 }
             }
         } else if (fileOrFolder instanceof TFile && fileOrFolder.extension === 'md') {
             // Handle single file
-            await this.loadSnippetsFromFile(fileOrFolder);
+            await this.loadSnippetsFromFile(fileOrFolder, false);
         } else {
             new Notice(`Invalid snippet path: ${snippetPath}`);
         }
     }
 
-    async loadSnippetsFromFile(file: TFile) {
+    async loadSnippetsFromFile(file: TFile, addFilePrefix: boolean) {
         const filePath = file.path;
         const fileStat = await this.app.vault.adapter.stat(filePath);
         const modifiedTime = fileStat?.mtime;
@@ -67,15 +79,14 @@ export default class SnippetManagerPlugin extends Plugin {
             const contentCache = this.app.metadataCache.getFileCache(file);
 
             // Merge snippets from this file into the global snippets
-            Object.assign(this.snippets, this.getSnippets(content, contentCache));
+            Object.assign(this.snippets, this.getSnippets(content, contentCache, addFilePrefix ? file.basename : null));
 
             this.lastModifiedTimes[filePath] = modifiedTime;
             new Notice(`Snippets reloaded from: ${filePath}`);
         }
     }
 
-
-    getSnippets(content: string, contentCache: CachedMetadata | null): Record<string, string> {
+    getSnippets(content: string, contentCache: CachedMetadata | null, filePrefix: string | null): Record<string, string> {
         const snippets: Record<string, string> = {};
 
         if (!contentCache?.headings) {
@@ -111,8 +122,11 @@ export default class SnippetManagerPlugin extends Plugin {
             // Remove code block formatting
             sectionContent = this.stripCodeBlockFormatting(sectionContent).trim();
 
+            // Prefix with file name if needed
+            const snippetKey = filePrefix ? `${filePrefix}: ${currentHeading.heading}` : currentHeading.heading;
+
             // Store the section content with the heading as the key
-            snippets[currentHeading.heading] = sectionContent;
+            snippets[snippetKey] = sectionContent;
         }
 
         return snippets;
@@ -131,5 +145,6 @@ export default class SnippetManagerPlugin extends Plugin {
 
     async saveSettings() {
         await this.saveData(this.settings);
+        this.clearSnippets();
     }
 }
