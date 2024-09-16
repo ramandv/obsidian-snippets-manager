@@ -140,11 +140,22 @@ export default class SnippetManagerPlugin extends Plugin {
     }
 
     async loadSettings() {
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+        const data = await this.loadData();
+
+        // Migrate old setting (snippetFilePath) to the new one (snippetPath) if it exists
+        if (data?.snippetFilePath && !data.snippetPath) {
+            data.snippetPath = data.snippetFilePath; // Copy old setting to the new key
+            delete data.snippetFilePath; // Optionally remove the old key if no longer needed
+        }
+
+        // Merge default settings with loaded/migrated settings
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
+
+        // Save settings after migration to ensure future consistency
+        await this.saveSettings();
     }
 
     async saveSettings() {
         await this.saveData(this.settings);
-        this.clearSnippets();
     }
 }
