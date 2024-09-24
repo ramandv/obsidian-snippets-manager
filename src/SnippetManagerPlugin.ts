@@ -185,6 +185,7 @@ export default class SnippetManagerPlugin extends Plugin {
             return {
                     "uid": idCounter++, // Unique ID for each snippet
                     "title": key, // Snippet title
+                    "subtitle": this.snippets[key], // Snippet content
                     "arg": this.snippets[key], // Snippet content
                     "key": key // Set the key as the trigger keyword
             };
