@@ -14,6 +14,7 @@ export default class SnippetManagerPlugin extends Plugin {
     settings: SnippetManagerSettings;
     snippets: Record<string, string> = {};
     lastModifiedTimes: Record<string, number> = {}; // Track modified times for multiple files
+    isSnippetsReloaded = false;
 
     async onload() {
         // Load settings
@@ -30,6 +31,10 @@ export default class SnippetManagerPlugin extends Plugin {
                 new SnippetSuggestModal(this.app, this, editor).open();
             }
         });
+        // Wait for the layout to be ready before loading snippets
+        this.app.workspace.onLayoutReady(() => {
+            this.loadSnippets();
+        });
     }
 
     clearSnippets() {
@@ -38,6 +43,7 @@ export default class SnippetManagerPlugin extends Plugin {
     }
 
     async loadSnippets() {
+        this.isSnippetsReloaded = false;
         const snippetPath = this.settings.snippetPath;
         const fileOrFolder = this.app.vault.getAbstractFileByPath(snippetPath);
 
@@ -66,6 +72,11 @@ export default class SnippetManagerPlugin extends Plugin {
         } else {
             new Notice(`Invalid snippet path: ${snippetPath}`);
         }
+
+        if(this.isSnippetsReloaded) {
+            await this.saveSnippetsAsAlfredJson();
+            this.isSnippetsReloaded = false;
+        }
     }
 
     async loadSnippetsFromFile(file: TFile, addFilePrefix: boolean) {
@@ -83,6 +94,7 @@ export default class SnippetManagerPlugin extends Plugin {
 
             this.lastModifiedTimes[filePath] = modifiedTime;
             new Notice(`Snippets reloaded from: ${filePath}`);
+            this.isSnippetsReloaded = true;
         }
     }
 
@@ -137,6 +149,31 @@ export default class SnippetManagerPlugin extends Plugin {
             // Remove the starting and ending backticks, and any language identifier
             return match.replace(/```(\w+)?\n?/, '').replace(/\n?```$/, '');
         });
+    }
+
+
+    // Save the snippets as a JSON file in Alfred's snippet format
+    async saveSnippetsAsAlfredJson() {
+        let idCounter = 1; // Initialize a counter for sequential UIDs
+        const alfredSnippets = Object.keys(this.snippets).map((key) => {
+            return {
+                    "uid": idCounter++, // Unique ID for each snippet
+                    "title": key, // Snippet title
+                    "arg": this.snippets[key], // Snippet content
+                    "key": key // Set the key as the trigger keyword
+            };
+        });
+
+        const jsonContent = JSON.stringify({ items: alfredSnippets }, null, 2); // Format the JSON
+        const jsonFilePath = `${this.manifest.dir}/alfred-snippets.json`; // Path to store the JSON file in the plugin's directory
+
+        try {
+            await this.app.vault.adapter.write(jsonFilePath, jsonContent); // Save the JSON file
+            new Notice(`Snippets saved as Alfred JSON in: ${jsonFilePath}`);
+        } catch (error) {
+            console.error('Error saving snippets as Alfred JSON:', error);
+            new Notice('Failed to save snippets as Alfred JSON');
+        }
     }
 
     async loadSettings() {
