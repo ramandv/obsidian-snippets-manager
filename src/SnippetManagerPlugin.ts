@@ -48,6 +48,7 @@ export default class SnippetManagerPlugin extends Plugin {
                     const promptManager = new ChatGPTPromptManager(this);
                     // Define your snippets folder path, e.g., 'Snippets/'
                     await promptManager.fetchLatestChatGPTPrompts(snippetPath);
+                    this.loadSnippets();
                 }
                 else {
                     new Notice(`Error: Snippet path should be an folder.`);
