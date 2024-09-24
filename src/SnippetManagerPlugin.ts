@@ -93,7 +93,7 @@ export default class SnippetManagerPlugin extends Plugin {
             Object.assign(this.snippets, this.getSnippets(content, contentCache, addFilePrefix ? file.basename : null));
 
             this.lastModifiedTimes[filePath] = modifiedTime;
-            new Notice(`Snippets reloaded from: ${filePath}`);
+            // new Notice(`Snippets reloaded from: ${filePath}`);
             this.isSnippetsReloaded = true;
         }
     }
@@ -169,7 +169,7 @@ export default class SnippetManagerPlugin extends Plugin {
 
         try {
             await this.app.vault.adapter.write(jsonFilePath, jsonContent); // Save the JSON file
-            new Notice(`Snippets saved as Alfred JSON in: ${jsonFilePath}`);
+            // new Notice(`Snippets saved as Alfred JSON in: ${jsonFilePath}`);
         } catch (error) {
             console.error('Error saving snippets as Alfred JSON:', error);
             new Notice('Failed to save snippets as Alfred JSON');
