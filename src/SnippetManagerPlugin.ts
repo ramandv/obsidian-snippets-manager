@@ -1,6 +1,7 @@
 import { Plugin, Notice, TFile, TFolder, CachedMetadata } from 'obsidian';
 import SnippetSuggestModal from './SnippetSuggestModal';
 import SnippetManagerSettingTab from './SnippetManagerSettingTab';
+import ChatGPTPromptManager from './ChatGPTPromptManager';
 
 export interface SnippetManagerSettings {
     snippetPath: string; // Can be either a file or a directory
@@ -31,6 +32,30 @@ export default class SnippetManagerPlugin extends Plugin {
                 new SnippetSuggestModal(this.app, this, editor).open();
             }
         });
+
+        // Add command to sync Awesome ChatGPT prompts
+        this.addCommand({
+            id: 'sync-chatgpt-prompts',
+            name: 'Sync Awesome ChatGPT Prompts',
+            callback: async () => {
+                const snippetPath = this.settings.snippetPath; // You can make this dynamic based on user settings
+                const fileOrFolder = this.app.vault.getAbstractFileByPath(snippetPath);
+                if (!fileOrFolder) {
+                    new Notice(`Snippet path not found: ${snippetPath}`);
+                    return;
+                }
+                if (fileOrFolder instanceof TFolder) {
+                    const promptManager = new ChatGPTPromptManager(this);
+                    // Define your snippets folder path, e.g., 'Snippets/'
+                    await promptManager.fetchLatestChatGPTPrompts(snippetPath);
+                }
+                else {
+                    new Notice(`Error: Snippet path should be an folder.`);
+                }
+
+            }
+        });
+
         // Wait for the layout to be ready before loading snippets
         this.app.workspace.onLayoutReady(() => {
             this.loadSnippets();
