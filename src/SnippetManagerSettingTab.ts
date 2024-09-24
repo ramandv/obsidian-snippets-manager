@@ -28,5 +28,27 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                     this.plugin.clearSnippets();
                 }));
+
+                new Setting(containerEl)
+                .setName('Enable Alfred Support')
+                .setDesc(
+                    createFragment((fragment) => {
+                        fragment.appendText('If enabled, snippets will be saved in Alfred JSON format.');
+                        fragment.append(createEl('br'));
+
+                        fragment.appendText('Add the following file in the Alfred workflow configuration.');
+                        fragment.append(createEl('br'));
+
+                        const fullPath = `${(this.plugin.app.vault.adapter as any).basePath}${this.plugin.manifest.dir}/alfred-snippets.json`;
+                        fragment.appendText(fullPath);
+                    })
+                )
+                .addToggle(toggle => toggle
+                    .setValue(this.plugin.settings.alfredSupport)
+                    .onChange(async (value) => {
+                        this.plugin.settings.alfredSupport = value;
+                        await this.plugin.saveSettings();
+                    })
+                );
     }
 }

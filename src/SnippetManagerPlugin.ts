@@ -5,10 +5,12 @@ import ChatGPTPromptManager from './ChatGPTPromptManager';
 
 export interface SnippetManagerSettings {
     snippetPath: string; // Can be either a file or a directory
+    alfredSupport: boolean; 
 }
 
 const DEFAULT_SETTINGS: SnippetManagerSettings = {
-    snippetPath: "Snippets.md" // Default to single file for backward compatibility
+    snippetPath: "Snippets.md", // Default to single file for backward compatibility
+    alfredSupport: false,
 };
 
 export default class SnippetManagerPlugin extends Plugin {
@@ -180,6 +182,10 @@ export default class SnippetManagerPlugin extends Plugin {
 
     // Save the snippets as a JSON file in Alfred's snippet format
     async saveSnippetsAsAlfredJson() {
+        if(!this.settings.alfredSupport) {
+            return;
+        }
+
         let idCounter = 1; // Initialize a counter for sequential UIDs
         const alfredSnippets = Object.keys(this.snippets).map((key) => {
             return {
