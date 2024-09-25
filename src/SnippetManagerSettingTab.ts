@@ -63,6 +63,10 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                     .onChange(async (value) => {
                         this.plugin.settings.alfredSupport = value;
                         await this.plugin.saveSettings();
+                        if(value) {
+                            this.plugin.clearSnippets();
+                            this.plugin.loadSnippets();
+                        }
                     })
                 );
     }

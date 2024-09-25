@@ -1,4 +1,6 @@
 import { TFolder, TFile, Notice } from 'obsidian';
+import Papa from 'papaparse';
+
 
 export default class ChatGPTPromptManager {
     plugin: any;
@@ -30,21 +32,25 @@ export default class ChatGPTPromptManager {
         }
     }
 
-    // Helper method to convert CSV to markdown format
     convertCSVToMarkdown(csvContent: string): string {
-        const lines = csvContent.split('\n');
+        // Parse CSV content using Papa Parse
+        const parsedData = Papa.parse(csvContent, {
+            header: true,  // Skip the header row automatically
+            skipEmptyLines: true,  // Ignore empty lines
+            quotes: true,  // Handle quoted fields properly
+        });
+
         let markdownContent = '';
 
-        for (let i = 1; i < lines.length; i++) { // Skip header row
-            const [act, prompt] = lines[i].split(',');
+        // Iterate through each row of the parsed data
+        parsedData.data.forEach((row: any) => {
+            const act = row['act']; // Assuming this is the header in your CSV
+            const prompt = row['prompt']; // Replace 'Prompt' with the actual column name from your CSV
 
             if (act && prompt) {
-                // Remove leading and trailing quotes from act and prompt
-                const cleanedAct = act.trim().replace(/^"|"$/g, '');
-                const cleanedPrompt = prompt.trim().replace(/^"|"$/g, '');
-                markdownContent += `### ${cleanedAct}\n${cleanedPrompt}\n\n`;
+                markdownContent += `### ${act.trim()}\n${prompt.trim()}\n\n`;
             }
-        }
+        });
 
         return markdownContent;
     }
