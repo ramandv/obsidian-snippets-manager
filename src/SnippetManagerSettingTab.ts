@@ -33,14 +33,29 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                 .setName('Enable Alfred Support')
                 .setDesc(
                     createFragment((fragment) => {
-                        fragment.appendText('If enabled, snippets will be saved in Alfred JSON format.');
+                        fragment.appendText('If enabled, snippets will be saved in ');
+                        fragment.append(
+                            createEl(
+                                "a",
+                                {
+                                text: "Alfred",
+                                href: "https://www.alfredapp.com/?utm_source=Obsidian_Snippet_Manager",
+                                },
+                                (a) => {
+                                a.setAttr("target", "_blank");
+                                },
+                            ),
+                        );
+                        fragment.appendText(' JSON format.');
                         fragment.append(createEl('br'));
 
-                        fragment.appendText('Add the following file in the Alfred workflow configuration.');
+                        fragment.appendText('Add the following file in the Alfred workflow configuration. (Just double click and copy the path)');
                         fragment.append(createEl('br'));
 
                         const fullPath = `${(this.plugin.app.vault.adapter as any).basePath}${this.plugin.manifest.dir}/alfred-snippets.json`;
-                        fragment.appendText(fullPath);
+                        const pathSpan = createEl('span', { text: fullPath });
+                        pathSpan.style.userSelect = 'text';
+                        fragment.append(pathSpan);
                     })
                 )
                 .addToggle(toggle => toggle
