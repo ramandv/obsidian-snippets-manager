@@ -52,7 +52,7 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                         fragment.appendText('Add the following file in the Alfred workflow configuration. (Just double click and copy the path)');
                         fragment.append(createEl('br'));
 
-                        const fullPath = `${(this.plugin.app.vault.adapter as any).basePath}${this.plugin.manifest.dir}/alfred-snippets.json`;
+                        const fullPath = `${(this.plugin.app.vault.adapter as any).basePath}/${this.plugin.manifest.dir}/alfred-snippets.json`;
                         const pathSpan = createEl('span', { text: fullPath });
                         pathSpan.style.userSelect = 'text';
                         fragment.append(pathSpan);
