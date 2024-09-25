@@ -3,9 +3,29 @@
 
 ## Overview
 
-The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly insert text snippets stored in a markdown file. This plugin enhances your workflow by enabling fuzzy search for snippets, allowing you to copy them to your clipboard or directly paste them at the cursor position in your active note.
+The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly insert text snippets stored in a markdown file. This plugin enhances your workflow by enabling fuzzy search for snippets, allowing you to copy them to your clipboard or directly paste them at the cursor position in your active note. Now, with Alfred integration and Awesome ChatGPT Prompts support, it's even more powerful.
 
 ![Obsidian Snippet Manager](https://github.com/user-attachments/assets/95f10833-faff-4313-8263-89dae134c60b)
+
+## New Features
+
+### Alfred Support
+Snippets can now be saved in Alfred JSON format for integration with Alfred. If enabled, your snippets will be automatically saved in a JSON format compatible with Alfred workflows.
+
+#### How to Use Alfred Support:
+
+1. In the plugin settings, toggle Enable Alfred Support.
+2. Snippets will be saved as alfred-snippets.json inside the plugin folder.
+3. Install the alfred workflow by downloading [here](https://github.com/ramandv/obsidian-snippets-manager/raw/refs/heads/master/Alfred%20Workflow%20-%20Obsidian%20Snippet%20Manager.alfredworkflow)
+4. You need to add the alfred-snippets.json file path to the alfredworkflow configuration. [In the snippets manager plugin settings panel, the full path to the generated Alfred JSON file is displayed, and you can copy it by double clicking and copy it for easy access.]
+
+### Fetch Latest Awesome ChatGPT Prompts
+You can fetch the latest Awesome ChatGPT Prompts directly into your snippets. The plugin will download the latest prompt file from the Awesome ChatGPT Prompts GitHub repository and convert it to a markdown and store it in your snippets folder.
+You can easily search through those prompts.
+
+#### How to Sync Awesome ChatGPT Prompts:
+Use the command palette (Cmd/Ctrl + P) and search for Sync Awesome ChatGPT Prompts.
+The plugin will fetch the latest version from the repository and save it.
 
 
 ## Usecases
@@ -34,6 +54,10 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. Iâ€
 - **Direct Insertion:** Paste snippets directly at the cursor position in the active markdown note.
 - **Configurable Snippet Location:** Choose a markdown file or folder to store your snippets.
 - **Mobile Support:** The plugin is fully compatible with Obsidian's mobile app. You can easily create a shortcut to the Snippet Search using the Advanced URI plugin, making it even more convenient to search and copy snippets on the go.
+- **Alfred Support:** Generate an Alfred-compatible JSON file for use in Alfred workflows. This file is saved inside the Snippet Manager plugin folder, and the path can be easily copied from the settings.
+- [**Awesome ChatGPT Prompts:**](https://github.com/f/awesome-chatgpt-prompts) Download and sync the latest prompts from the Awesome ChatGPT Prompts repository as snippets.
+
+
 
 ## Links
 
