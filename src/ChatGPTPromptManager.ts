@@ -1,6 +1,5 @@
 import { TFolder, TFile, Notice } from 'obsidian';
-import Papa from 'papaparse';
-
+import * as Papa from 'papaparse';
 
 export default class ChatGPTPromptManager {
     plugin: any;
@@ -34,10 +33,9 @@ export default class ChatGPTPromptManager {
 
     convertCSVToMarkdown(csvContent: string): string {
         // Parse CSV content using Papa Parse
-        const parsedData = Papa.parse(csvContent, {
+        const parsedData = Papa.parse<{ act: string, prompt: string }>(csvContent, {
             header: true,  // Skip the header row automatically
             skipEmptyLines: true,  // Ignore empty lines
-            quotes: true,  // Handle quoted fields properly
         });
 
         let markdownContent = '';
