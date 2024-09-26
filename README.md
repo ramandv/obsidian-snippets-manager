@@ -48,7 +48,7 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. Iâ€
 ## Features
 
 - **Snippet Management:** Store snippets in a markdown file with headings as keys (whether personal details like email signature, passport number, code snippets or anything).
-- **Folder Support:** The plugin supports snippets stored in a folder of markdown files, including subfolders. Either select the single markdown file in Settings for the plugin, or the folder containing the snippets.
+- **Folder Support:** The plugin supports snippets stored in a folder of markdown files, including subfolders. Either select the single markdown file in Settings for the plugin, or the folder containing the markdown files with snippets.
 - **Code Snippets**: The plugin supports code snippets stored in markdown code blocks. When retrieving a code snippet, the plugin automatically strips the backticks, providing you with just the clean code.
 - **Fuzzy Search:** Quickly search through snippets using a fuzzy search interface.
 - **Clipboard Copying:** Copy selected snippets to your clipboard.
