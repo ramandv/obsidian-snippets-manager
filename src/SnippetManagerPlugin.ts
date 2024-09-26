@@ -80,7 +80,7 @@ export default class SnippetManagerPlugin extends Plugin {
 		}
 
 		if (fileOrFolder instanceof TFolder) {
-			const markdownFiles = getAllMarkdownFiles(fileOrFolder);
+			const markdownFiles = this.getAllMarkdownFiles(fileOrFolder);
 
 			const addFilePrefix = markdownFiles.length > 1;
 
@@ -118,14 +118,12 @@ export default class SnippetManagerPlugin extends Plugin {
 			const contentCache = this.app.metadataCache.getFileCache(file);
 
 			// Merge snippets from this file into the global snippets
-			const filePrefix = addFilePrefix ? getRelativePath(file, this.settings.snippetPath) : null;
+			const filePrefix = addFilePrefix
+				? this.getRelativePath(file, this.settings.snippetPath)
+				: null;
 			Object.assign(
 				this.snippets,
-				this.getSnippets(
-					content,
-					contentCache,
-					filePrefix
-				)
+				this.getSnippets(content, contentCache, filePrefix)
 			);
 
 			this.lastModifiedTimes[filePath] = modifiedTime;
@@ -180,9 +178,10 @@ export default class SnippetManagerPlugin extends Plugin {
 				this.stripCodeBlockFormatting(sectionContent).trim();
 
 			// Prefix with file name if needed
-			const snippetKey = filePrefix && filePrefix !== ''
-				? `${filePrefix}: ${currentHeading.heading}`
-				: currentHeading.heading;
+			const snippetKey =
+				filePrefix && filePrefix !== ""
+					? `${filePrefix}: ${currentHeading.heading}`
+					: currentHeading.heading;
 
 			// Store the section content with the heading as the key
 			snippets[snippetKey] = sectionContent;
@@ -247,26 +246,27 @@ export default class SnippetManagerPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	function getRelativePath(file: TFile, rootPath: string): string {
+	getRelativePath(file: TFile, rootPath: string): string {
 		let relativePath = file.path.slice(rootPath.length);
-		if (relativePath.startsWith('/')) {
+		if (relativePath.startsWith("/")) {
 			relativePath = relativePath.slice(1);
 		}
-		return relativePath.replace(/\.md$/, '');
+		return relativePath.replace(/\.md$/, "");
 	}
 
-	function getAllMarkdownFiles(folder: TFolder): TFile[] {
+	getAllMarkdownFiles(folder: TFolder): TFile[] {
 		let markdownFiles: TFile[] = [];
 
 		folder.children.forEach((child) => {
 			if (child instanceof TFile && child.extension === "md") {
 				markdownFiles.push(child);
 			} else if (child instanceof TFolder) {
-				markdownFiles = markdownFiles.concat(getAllMarkdownFiles(child));
+				markdownFiles = markdownFiles.concat(
+					this.getAllMarkdownFiles(child)
+				);
 			}
 		});
 
 		return markdownFiles;
 	}
-
 }
