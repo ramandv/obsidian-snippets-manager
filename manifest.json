@@ -1,7 +1,7 @@
 {
 	"id": "snippets-manager",
 	"name": "Snippets Manager",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"minAppVersion": "0.15.0",
 	"description": "A versatile text expansion plugin with full mobile support. Easily manage code snippets, personal info like passport numbers, email signatures, and more. Includes seamless Alfred integration and the ability to sync Awesome ChatGPT prompts as snippets.",
 	"author": "Venkatraman Dhamodaran",
