@@ -76,6 +76,8 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. Iâ€
 	 - Go to `Settings` > `Community Plugins` > `Browse`.
 	 - Search for `Snippets Manager`.
 	 - Click `Install` and then `Enable`.
+ 
+  - Or just [install directly into Obsidian](https://obsidian.md/plugins?id=snippets-manager).
 
 ## Usage
 
