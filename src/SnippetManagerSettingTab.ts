@@ -29,45 +29,66 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                     this.plugin.clearSnippets();
                 }));
 
-                new Setting(containerEl)
-                .setName('Enable Alfred Support')
-                .setDesc(
-                    createFragment((fragment) => {
-                        fragment.appendText('If enabled, snippets will be saved in ');
-                        fragment.append(
-                            createEl(
-                                "a",
-                                {
+        new Setting(containerEl)
+            .setName('Enable Alfred Support')
+            .setDesc(
+                createFragment((fragment) => {
+                    fragment.appendText('If enabled, snippets will be saved in ');
+                    fragment.append(
+                        createEl(
+                            "a",
+                            {
                                 text: "Alfred",
                                 href: "https://www.alfredapp.com/?utm_source=Obsidian_Snippet_Manager",
-                                },
-                                (a) => {
+                            },
+                            (a) => {
                                 a.setAttr("target", "_blank");
-                                },
-                            ),
-                        );
-                        fragment.appendText(' JSON format.');
-                        fragment.append(createEl('br'));
+                            },
+                        ),
+                    );
+                    fragment.appendText(' JSON format.');
+                    fragment.append(createEl('br'));
 
-                        fragment.appendText('Add the following file in the Alfred workflow configuration. (Just double click and copy the path)');
-                        fragment.append(createEl('br'));
+                    fragment.appendText('Add the following file in the Alfred workflow configuration. (Just double click and copy the path)');
+                    fragment.append(createEl('br'));
 
-                        const fullPath = `${(this.plugin.app.vault.adapter as any).basePath}/${this.plugin.manifest.dir}/alfred-snippets.json`;
-                        const pathSpan = createEl('span', { text: fullPath });
-                        pathSpan.style.userSelect = 'text';
-                        fragment.append(pathSpan);
-                    })
-                )
-                .addToggle(toggle => toggle
-                    .setValue(this.plugin.settings.alfredSupport)
-                    .onChange(async (value) => {
-                        this.plugin.settings.alfredSupport = value;
-                        await this.plugin.saveSettings();
-                        if(value) {
-                            this.plugin.clearSnippets();
-                            this.plugin.loadSnippets();
-                        }
-                    })
-                );
+                    const fullPath = `${(this.plugin.app.vault.adapter as any).basePath}/${this.plugin.manifest.dir}/alfred-snippets.json`;
+                    const pathSpan = createEl('span', { text: fullPath });
+                    pathSpan.style.userSelect = 'text';
+                    fragment.append(pathSpan);
+                })
+            )
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.alfredSupport)
+                .onChange(async (value) => {
+                    this.plugin.settings.alfredSupport = value;
+                    await this.plugin.saveSettings();
+                    if(value) {
+                        this.plugin.clearSnippets();
+                        this.plugin.loadSnippets();
+                    }
+                })
+            );
+
+        const settingUseEnter = new Setting(containerEl)
+            .setName('Use ↵ to Insert Snippet?')
+            .setDesc(
+                this.plugin.settings.useEnterToInsert
+                    ? 'Pressing ↵ will insert the selected snippet.'
+                    : 'Pressing ⌘ ↵ will insert the snippet.'
+            )
+            .addToggle( toggle => toggle
+                .setValue(this.plugin.settings.useEnterToInsert)
+                .onChange(async (value) => {
+                    this.plugin.settings.useEnterToInsert = value;
+                    settingUseEnter.setDesc(
+                        value
+                            ? 'Pressing ↵ will insert the selected snippet.'
+                            : 'Pressing ⌘ ↵ will insert the snippet.'
+                    );
+                    await this.plugin.saveSettings();
+                }))
+            ;
+        ;
     }
 }

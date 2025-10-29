@@ -5,12 +5,14 @@ import ChatGPTPromptManager from './ChatGPTPromptManager';
 
 export interface SnippetManagerSettings {
     snippetPath: string; // Can be either a file or a directory
-    alfredSupport: boolean; 
+    alfredSupport: boolean;
+    useEnterToInsert: boolean; // Whether to use ↵ or ⌘ ↵ to insert snippet
 }
 
 const DEFAULT_SETTINGS: SnippetManagerSettings = {
     snippetPath: "Snippets.md", // Default to single file for backward compatibility
     alfredSupport: false,
+    useEnterToInsert: false,
 };
 
 export default class SnippetManagerPlugin extends Plugin {

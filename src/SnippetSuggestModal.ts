@@ -42,6 +42,11 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
             new Notice(`Copied snippet: ${item}`);
         });
 
+        if (this.plugin.settings.useEnterToInsert) {
+            this.insertSnippetAtCursor(value);
+            return;
+        }
+
         if (evt.metaKey || evt.ctrlKey) {
             this.insertSnippetAtCursor(value);
         }
@@ -62,6 +67,14 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
     }
 
     displayInstructions() {
+        if (this.plugin.settings.useEnterToInsert) {
+            this.setInstructions([
+                { command: "↵", purpose: "to copy and paste at cursor position" },
+                { command: "⌘ ↵", purpose: "to copy to clipboard" },
+            ]);
+            return;
+        }
+
         this.setInstructions([
             { command: "↵", purpose: "to copy to clipboard" },
             { command: "⌘ ↵", purpose: "to copy and paste at cursor position" },
