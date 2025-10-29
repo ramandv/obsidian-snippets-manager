@@ -89,6 +89,18 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 }))
             ;
-        ;
+
+        new Setting(containerEl)
+            .setName('Strip Code Block Formatting')
+            .setDesc('Remove code block markdown (```) from snippet content when loading snippets.')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.stripCodeBlockFormatting)
+                .onChange(async (value) => {
+                    this.plugin.settings.stripCodeBlockFormatting = value;
+                    await this.plugin.saveSettings();
+                    this.plugin.clearSnippets();
+                    this.plugin.loadSnippets();
+                })
+            );
     }
 }

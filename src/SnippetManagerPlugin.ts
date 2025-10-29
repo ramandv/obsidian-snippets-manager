@@ -7,12 +7,14 @@ export interface SnippetManagerSettings {
     snippetPath: string; // Can be either a file or a directory
     alfredSupport: boolean;
     useEnterToInsert: boolean; // Whether to use ↵ or ⌘ ↵ to insert snippet
+    stripCodeBlockFormatting: boolean; // Whether to strip code block formatting from snippets
 }
 
 const DEFAULT_SETTINGS: SnippetManagerSettings = {
     snippetPath: "Snippets.md", // Default to single file for backward compatibility
     alfredSupport: false,
     useEnterToInsert: false,
+    stripCodeBlockFormatting: true,
 };
 
 export default class SnippetManagerPlugin extends Plugin {
@@ -87,7 +89,7 @@ export default class SnippetManagerPlugin extends Plugin {
             const addFilePrefix = markdownFiles.length > 1;
 
             // Handle directory: load snippets from all markdown files in the folder
-            for (let file of markdownFiles) {
+            for (const file of markdownFiles) {
                 if (file instanceof TFile) {
                     await this.loadSnippetsFromFile(file, addFilePrefix);
                 }
@@ -158,8 +160,12 @@ export default class SnippetManagerPlugin extends Plugin {
                 );
             }
 
-            // Remove code block formatting
-            sectionContent = this.stripCodeBlockFormatting(sectionContent).trim();
+            // Remove code block formatting if enabled
+            if (this.settings.stripCodeBlockFormatting) {
+                sectionContent = this.stripCodeBlockFormatting(sectionContent).trim();
+            } else {
+                sectionContent = sectionContent.trim();
+            }
 
             // Prefix with file name if needed
             const snippetKey = filePrefix && filePrefix !== '' ? `${filePrefix}: ${currentHeading.heading}` : currentHeading.heading;
