@@ -20,6 +20,7 @@ const DEFAULT_SETTINGS: SnippetManagerSettings = {
 export default class SnippetManagerPlugin extends Plugin {
     settings: SnippetManagerSettings;
     snippets: Record<string, string> = {};
+    snippetsByFile: Record<string, Record<string, string>> = {}; // Track snippets per file
     lastModifiedTimes: Record<string, number> = {}; // Track modified times for multiple files
     isSnippetsReloaded = false;
 
@@ -71,6 +72,7 @@ export default class SnippetManagerPlugin extends Plugin {
 
     clearSnippets() {
         this.snippets = {};
+        this.snippetsByFile = {};
         this.lastModifiedTimes = {};
     }
 
@@ -84,6 +86,8 @@ export default class SnippetManagerPlugin extends Plugin {
             return;
         }
 
+        const activeFiles: string[] = [];
+
         if (fileOrFolder instanceof TFolder) {
             const markdownFiles = this.getAllMarkdownFiles(fileOrFolder);
             const addFilePrefix = markdownFiles.length > 1;
@@ -91,17 +95,34 @@ export default class SnippetManagerPlugin extends Plugin {
             // Handle directory: load snippets from all markdown files in the folder
             for (const file of markdownFiles) {
                 if (file instanceof TFile) {
+                    activeFiles.push(file.path);
                     await this.loadSnippetsFromFile(file, addFilePrefix);
                 }
             }
         } else if (fileOrFolder instanceof TFile && fileOrFolder.extension === 'md') {
             // Handle single file
+            activeFiles.push(fileOrFolder.path);
             await this.loadSnippetsFromFile(fileOrFolder, false);
         } else {
             new Notice(`Invalid snippet path: ${snippetPath}`);
         }
 
-        if(this.isSnippetsReloaded) {
+        // Clean up snippets from files that no longer exist or were removed from scope
+        for (const filePath in this.snippetsByFile) {
+            if (!activeFiles.includes(filePath)) {
+                delete this.snippetsByFile[filePath];
+                delete this.lastModifiedTimes[filePath];
+                this.isSnippetsReloaded = true;
+            }
+        }
+
+        // Rebuild the flat snippets object if any changes occurred
+        if (this.isSnippetsReloaded) {
+            this.snippets = {};
+            for (const filePath in this.snippetsByFile) {
+                Object.assign(this.snippets, this.snippetsByFile[filePath]);
+            }
+
             await this.saveSnippetsAsAlfredJson();
             this.isSnippetsReloaded = false;
         }
@@ -117,9 +138,13 @@ export default class SnippetManagerPlugin extends Plugin {
             const content = await this.app.vault.cachedRead(file);
             const contentCache = this.app.metadataCache.getFileCache(file);
 
-            // Merge snippets from this file into the global snippets
+            // Get snippets for this specific file
             const filePrefix = addFilePrefix ? this.getRelativePath(file, this.settings.snippetPath) : null;
-            Object.assign(this.snippets, this.getSnippets(content, contentCache, filePrefix));
+            const newSnippets = this.getSnippets(content, contentCache, filePrefix);
+
+            // Should strictly check if content actually changed, but modification time is a good enough proxy for now
+            // We replace the entire entry for this file
+            this.snippetsByFile[filePath] = newSnippets;
 
             this.lastModifiedTimes[filePath] = modifiedTime;
             // new Notice(`Snippets reloaded from: ${filePath}`);
@@ -187,18 +212,18 @@ export default class SnippetManagerPlugin extends Plugin {
 
     // Save the snippets as a JSON file in Alfred's snippet format
     async saveSnippetsAsAlfredJson() {
-        if(!this.settings.alfredSupport) {
+        if (!this.settings.alfredSupport) {
             return;
         }
 
         let idCounter = 1; // Initialize a counter for sequential UIDs
         const alfredSnippets = Object.keys(this.snippets).map((key) => {
             return {
-                    "uid": idCounter++, // Unique ID for each snippet
-                    "title": key, // Snippet title
-                    "subtitle": this.snippets[key], // Snippet content
-                    "arg": this.snippets[key], // Snippet content
-                    "key": key // Set the key as the trigger keyword
+                "uid": idCounter++, // Unique ID for each snippet
+                "title": key, // Snippet title
+                "subtitle": this.snippets[key], // Snippet content
+                "arg": this.snippets[key], // Snippet content
+                "key": key // Set the key as the trigger keyword
             };
         });
 
