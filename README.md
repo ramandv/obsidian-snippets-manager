@@ -28,6 +28,15 @@ Use the command palette (Cmd/Ctrl + P) and search for Sync Awesome ChatGPT Promp
 The plugin will fetch the latest version from the repository and save it.
 
 
+### Templater Support
+You can now use Templater syntax in your snippets! If you have the [Templater](https://github.com/SilentVoid13/Templater) plugin installed, any snippet containing `<%` will be processed by Templater before insertion.
+
+#### Example:
+````markdown
+### Today's Date
+Today is <% tp.date.now("YYYY-MM-DD") %>
+````
+
 ## Usecases
 
 ### Do i need this plugin if i already you Text Expander kind of apps?

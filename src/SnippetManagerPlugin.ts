@@ -187,7 +187,7 @@ export default class SnippetManagerPlugin extends Plugin {
 
             // Remove code block formatting if enabled
             if (this.settings.stripCodeBlockFormatting) {
-                sectionContent = this.stripCodeBlockFormatting(sectionContent).trim();
+                sectionContent = this.stripCodeBlockFormatting(sectionContent);
             } else {
                 sectionContent = sectionContent.trim();
             }
