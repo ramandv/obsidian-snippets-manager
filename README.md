@@ -66,6 +66,7 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. Iâ€
 - **Mobile Support:** The plugin is fully compatible with Obsidian's mobile app. You can easily create a shortcut to the Snippet Search using the Advanced URI plugin, making it even more convenient to search and copy snippets on the go.
 - **Alfred Support:** Generate an Alfred-compatible JSON file for use in Alfred workflows. This file is saved inside the Snippet Manager plugin folder, and the path can be easily copied from the settings.
 - [**Awesome ChatGPT Prompts:**](https://github.com/f/awesome-chatgpt-prompts) Download and sync the latest prompts from the Awesome ChatGPT Prompts repository as snippets.
+- **Templater Support:** Support for [Templater](https://github.com/SilentVoid13/Templater) syntax. Snippets with `<%` will be processed by Templater before insertion.
 
 
 
