@@ -6,15 +6,15 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
     items: Record<string, string> = {};
     editor: Editor;
 
-    constructor(app: any, plugin: SnippetManagerPlugin, editor: Editor ) {
+    constructor(app: any, plugin: SnippetManagerPlugin, editor: Editor) {
         super(app);
         this.plugin = plugin;
         this.editor = editor;
         this.refreshSnippets();
         this.scope.register(['Mod'], 'Enter', (evt: KeyboardEvent) => {
             if (evt.isComposing) {
-				return;
-			}
+                return;
+            }
             // @ts-ignore
             this.chooser.useSelectedItem(evt);
             return false;
@@ -36,8 +36,21 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
         return item;
     }
 
-    onChooseItem(item: string, evt: KeyboardEvent) {
-        const value = this.plugin.snippets[item];
+    async onChooseItem(item: string, evt: KeyboardEvent) {
+        let value = this.plugin.snippets[item];
+
+        if (value.includes("<%")) {
+            // @ts-ignore
+            const templater = this.app.plugins.getPlugin('templater-obsidian');
+            if (templater) {
+                const activeFile = this.app.workspace.getActiveFile();
+                if (activeFile) {
+                    // @ts-ignore
+                    value = await templater.templater.parse_template({ target_file: activeFile, run_mode: 4 }, value);
+                }
+            }
+        }
+
         navigator.clipboard.writeText(value).then(() => {
             new Notice(`Copied snippet: ${item}`);
         });
