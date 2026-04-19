@@ -1,4 +1,4 @@
-import { Plugin, Notice, TFile, TFolder, CachedMetadata } from 'obsidian';
+import { Plugin, Notice, TFile, TFolder, CachedMetadata, MarkdownView } from 'obsidian';
 import SnippetSuggestModal from './SnippetSuggestModal';
 import SnippetManagerSettingTab from './SnippetManagerSettingTab';
 import ChatGPTPromptManager from './ChatGPTPromptManager';
@@ -35,7 +35,9 @@ export default class SnippetManagerPlugin extends Plugin {
         this.addCommand({
             id: 'open-snippet-search',
             name: 'Search Snippets',
-            editorCallback: (editor, view) => {
+            callback: () => {
+                const activeMarkdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+                const editor = activeMarkdownView?.getMode() === 'source' ? activeMarkdownView.editor : null;
                 new SnippetSuggestModal(this.app, this, editor).open();
             }
         });

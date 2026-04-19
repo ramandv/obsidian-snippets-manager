@@ -1,12 +1,12 @@
-import { Editor, FuzzySuggestModal, MarkdownView, Notice } from 'obsidian';
+import { Editor, FuzzySuggestModal, Notice } from 'obsidian';
 import SnippetManagerPlugin from './SnippetManagerPlugin';
 
 export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
     plugin: SnippetManagerPlugin;
     items: Record<string, string> = {};
-    editor: Editor;
+    editor: Editor | null;
 
-    constructor(app: any, plugin: SnippetManagerPlugin, editor: Editor) {
+    constructor(app: any, plugin: SnippetManagerPlugin, editor: Editor | null) {
         super(app);
         this.plugin = plugin;
         this.editor = editor;
@@ -55,6 +55,10 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
             new Notice(`Copied snippet: ${item}`);
         });
 
+        if (!this.editor) {
+            return;
+        }
+
         if (this.plugin.settings.useEnterToInsert) {
             this.insertSnippetAtCursor(value);
             return;
@@ -66,12 +70,8 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
     }
 
     insertSnippetAtCursor(value: string) {
-        if (this.editor) {
-            this.editor.replaceSelection(value);
-            // new Notice(`Pasted snippet at cursor: ${value}`);
-        } else {
-            new Notice("Active view is not a markdown editor. Snippet was copied to clipboard.");
-        }
+        this.editor?.replaceSelection(value);
+        // new Notice(`Pasted snippet at cursor: ${value}`);
     }
 
     onOpen() {
@@ -80,6 +80,13 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
     }
 
     displayInstructions() {
+        if (!this.editor) {
+            this.setInstructions([
+                { command: "↵", purpose: "to copy to clipboard" },
+            ]);
+            return;
+        }
+
         if (this.plugin.settings.useEnterToInsert) {
             this.setInstructions([
                 { command: "↵", purpose: "to copy and paste at cursor position" },
