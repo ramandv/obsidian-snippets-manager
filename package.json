@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-snippets-manager",
-	"version": "1.1.5",
+	"version": "1.1.6",
 	"description": "Snippets manager for Obsidian",
 	"main": "main.js",
 	"scripts": {
