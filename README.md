@@ -3,7 +3,7 @@
 
 ## Overview
 
-The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly insert text snippets stored in a markdown file (or folder of markdown files, including subfolders). This plugin enhances your workflow by enabling fuzzy search for snippets, allowing you to copy them to your clipboard or directly paste them at the cursor position in your active note. Now, with Alfred integration and Awesome ChatGPT Prompts support, it's even more powerful.
+The **Snippets Manager Plugin** for Obsidian allows you to manage and quickly insert text snippets stored in a markdown file (or folder of markdown files, including subfolders). This plugin enhances your workflow by enabling fuzzy search for snippets, allowing you to copy them to your clipboard or directly paste them at the cursor position in your active note. Now, with Alfred integration, it's even more powerful.
 
 ![Obsidian Snippet Manager](https://github.com/user-attachments/assets/95f10833-faff-4313-8263-89dae134c60b)
 
@@ -41,9 +41,6 @@ Example Advanced URI link for Obsidian. You can create the link to the URL. [Rep
 ```
 obsidian://advanced-uri?vault=<your-vaultname>&commandid=snippets-manager%3Aopen-snippet-search
 ```
-
-### Desktop Use:
-On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. I’ve stored a bunch of prompts from [Awesome ChatGPT Prompts](https://github.com/f/awesome-chatgpt-prompts), and with Snippet Manager, I can quickly find and copy the one I need.
 
 
 ## Features
