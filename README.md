@@ -19,14 +19,6 @@ Snippets can now be saved in Alfred JSON format for integration with Alfred. If 
 3. Install the alfred workflow by downloading [here](https://github.com/ramandv/obsidian-snippets-manager/raw/refs/heads/master/Alfred%20Workflow%20-%20Obsidian%20Snippet%20Manager.alfredworkflow)
 4. You need to add the alfred-snippets.json file path to the alfredworkflow configuration. [In the snippets manager plugin settings panel, the full path to the generated Alfred JSON file is displayed, and you can copy it by double clicking and copy it for easy access.]
 
-### Fetch Latest Awesome ChatGPT Prompts
-You can fetch the latest Awesome ChatGPT Prompts directly into your snippets. The plugin will download the latest prompt file from the Awesome ChatGPT Prompts GitHub repository and convert it to a markdown and store it in your snippets folder.
-You can easily search through those prompts.
-
-#### How to Sync Awesome ChatGPT Prompts:
-Use the command palette (Cmd/Ctrl + P) and search for Sync Awesome ChatGPT Prompts.
-The plugin will fetch the latest version from the repository and save it.
-
 
 ### Templater Support
 You can now use Templater syntax in your snippets! If you have the [Templater](https://github.com/SilentVoid13/Templater) plugin installed, any snippet containing `<%` will be processed by Templater before insertion.
@@ -57,7 +49,8 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. Iâ€
 ## Features
 
 - **Snippet Management:** Store snippets in a markdown file with headings as keys (whether personal details like email signature, passport number, code snippets or anything).
-- **Folder Support:** The plugin supports snippets stored in a folder of markdown files, including subfolders. Either select the single markdown file in Settings for the plugin, or the folder containing the markdown files with snippets.
+- **Multiple Locations & Tags Support:** You can define multiple comma-separated file/folder paths to aggregate snippets. You can also specify comma-separated `#tags` to dynamically pull snippets from any note in your vault containing those tags.
+- **Path Prefixing:** By default, snippets from subdirectories or tags include their directory path (or vault path) in their visual name. A toggle is available in settings to disable this and only show the base file name.
 - **Code Snippets**: The plugin supports code snippets stored in markdown code blocks. When retrieving a code snippet, the plugin automatically strips the backticks, providing you with just the clean code.
 - **Fuzzy Search:** Quickly search through snippets using a fuzzy search interface.
 - **Clipboard Copying:** Copy selected snippets to your clipboard.
@@ -65,7 +58,6 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. Iâ€
 - **Configurable Snippet Location:** Choose a markdown file or folder to store your snippets.
 - **Mobile Support:** The plugin is fully compatible with Obsidian's mobile app. You can easily create a shortcut to the Snippet Search using the Advanced URI plugin, making it even more convenient to search and copy snippets on the go.
 - **Alfred Support:** Generate an Alfred-compatible JSON file for use in Alfred workflows. This file is saved inside the Snippet Manager plugin folder, and the path can be easily copied from the settings.
-- [**Awesome ChatGPT Prompts:**](https://github.com/f/awesome-chatgpt-prompts) Download and sync the latest prompts from the Awesome ChatGPT Prompts repository as snippets.
 - **Templater Support:** Support for [Templater](https://github.com/SilentVoid13/Templater) syntax. Snippets with `<%` will be processed by Templater before insertion.
 
 
@@ -93,9 +85,10 @@ On my desktop, Snippet Manager is my go-to tool for copying ChatGPT prompts. Iâ€
 
 ### Setting Up Snippets
 
-1. **Single File or Folder Setup:**
+1. **Multiple Paths and Tags Setup:**
 
-You can store snippets in a single markdown file (e.g., Snippets.md) or in multiple markdown files within a folder (e.g., Snippets/
+You can store snippets in single markdown files (e.g., `Snippets.md`), across multiple folders (e.g., `Programming/`), or dynamically pull them from any markdown file tagged with specific tags (e.g., `#snippet`).
+In the plugin settings, you can provide a comma-separated list of **locations** and another for **tags**.
 
 2. **Markdown Snippet Structure:**
 
@@ -123,9 +116,11 @@ console.log("Hello World!!!");
   - Snippets/Email.md (with headings for email templates)
   - Snippets/Code.md (with headings for code snippets)
 
-2. **Configure the Snippet File:**
+2. **Configure Snippet Settings:**
    - In Obsidian, go to `Settings` > `Snippets Manager`.
-   - Set the path to your snippet file (e.g., Snippets.md) or folder (e.g., Snippets/).
+   - Set the `Snippets locations` to your snippet files or folders separated by commas (e.g., `Snippets.md, Support/`).
+   - Alternatively or additionally, set `Snippets tags` to dynamically resolve snippets (e.g., `#snippet, #templates`).
+   - Adjust `Show full folder path as prefix` if you want to hide or show long directory paths in your snippet names.
 
 ### Using Snippets Manager
 

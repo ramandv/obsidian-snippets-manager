@@ -14,10 +14,10 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
         containerEl.empty();
 
         new Setting(containerEl)
-            .setName('Snippets file path or Snippets folder path')
-            .setDesc('Path to the markdown file where snippets are stored. or Path to Folder which contains multiple Snippets file')
+            .setName('Snippets locations (paths)')
+            .setDesc('Comma-separated list of file paths or folder paths (e.g. Snippets.md, Programming/)')
             .addText(text => text
-                .setPlaceholder('Snippets.md')
+                .setPlaceholder('Snippets.md, Programming/Nodejs')
                 .setValue(this.plugin.settings.snippetPath)
                 .onChange(async (value) => {
                     // Remove trailing slash if it exists
@@ -28,6 +28,31 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                     this.plugin.clearSnippets();
                 }));
+
+        new Setting(containerEl)
+            .setName('Snippets tags')
+            .setDesc('Comma-separated list of tags to load snippets from (e.g. #snippet, #templates). Snippets from all files with these tags will be loaded.')
+            .addText(text => text
+                .setPlaceholder('#snippet, #templates')
+                .setValue(this.plugin.settings.snippetTags)
+                .onChange(async (value) => {
+                    this.plugin.settings.snippetTags = value;
+                    await this.plugin.saveSettings();
+                    this.plugin.clearSnippets();
+                }));
+
+        new Setting(containerEl)
+            .setName('Show full folder path as prefix')
+            .setDesc('When enabled, snippets from subdirectories or tags will include their folder path. When disabled, only the file name is used.')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.showFullPathAsPrefix)
+                .onChange(async (value) => {
+                    this.plugin.settings.showFullPathAsPrefix = value;
+                    await this.plugin.saveSettings();
+                    this.plugin.clearSnippets();
+                    this.plugin.loadSnippets();
+                })
+            );
 
         new Setting(containerEl)
             .setName('Enable Alfred Support')

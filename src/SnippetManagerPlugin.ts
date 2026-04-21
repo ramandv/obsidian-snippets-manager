@@ -1,10 +1,11 @@
-import { Plugin, Notice, TFile, TFolder, CachedMetadata, MarkdownView } from 'obsidian';
+import { Plugin, Notice, TFile, TFolder, CachedMetadata, MarkdownView, getAllTags } from 'obsidian';
 import SnippetSuggestModal from './SnippetSuggestModal';
 import SnippetManagerSettingTab from './SnippetManagerSettingTab';
-import ChatGPTPromptManager from './ChatGPTPromptManager';
 
 export interface SnippetManagerSettings {
     snippetPath: string; // Can be either a file or a directory
+    snippetTags: string; // Comma-separated list of tags
+    showFullPathAsPrefix: boolean; // Whether to show full path as prefix
     alfredSupport: boolean;
     useEnterToInsert: boolean; // Whether to use ↵ or ⌘ ↵ to insert snippet
     stripCodeBlockFormatting: boolean; // Whether to strip code block formatting from snippets
@@ -12,6 +13,8 @@ export interface SnippetManagerSettings {
 
 const DEFAULT_SETTINGS: SnippetManagerSettings = {
     snippetPath: "Snippets.md", // Default to single file for backward compatibility
+    snippetTags: "",
+    showFullPathAsPrefix: true,
     alfredSupport: false,
     useEnterToInsert: false,
     stripCodeBlockFormatting: true,
@@ -42,30 +45,6 @@ export default class SnippetManagerPlugin extends Plugin {
             }
         });
 
-        // Add command to sync Awesome ChatGPT prompts
-        this.addCommand({
-            id: 'sync-chatgpt-prompts',
-            name: 'Sync Awesome ChatGPT Prompts',
-            callback: async () => {
-                const snippetPath = this.settings.snippetPath; // You can make this dynamic based on user settings
-                const fileOrFolder = this.app.vault.getAbstractFileByPath(snippetPath);
-                if (!fileOrFolder) {
-                    new Notice(`Snippet path not found: ${snippetPath}`);
-                    return;
-                }
-                if (fileOrFolder instanceof TFolder) {
-                    const promptManager = new ChatGPTPromptManager(this);
-                    // Define your snippets folder path, e.g., 'Snippets/'
-                    await promptManager.fetchLatestChatGPTPrompts(snippetPath);
-                    this.loadSnippets();
-                }
-                else {
-                    new Notice(`Error: Snippet path should be an folder.`);
-                }
-
-            }
-        });
-
         // Wait for the layout to be ready before loading snippets
         this.app.workspace.onLayoutReady(() => {
             this.loadSnippets();
@@ -80,33 +59,63 @@ export default class SnippetManagerPlugin extends Plugin {
 
     async loadSnippets() {
         this.isSnippetsReloaded = false;
-        const snippetPath = this.settings.snippetPath;
-        const fileOrFolder = this.app.vault.getAbstractFileByPath(snippetPath);
+        
+        const rawPaths = this.settings.snippetPath ? this.settings.snippetPath.split(',').map(s => s.trim()).filter(Boolean) : [];
+        const rawTags = this.settings.snippetTags ? this.settings.snippetTags.split(',').map(s => s.trim()).filter(Boolean).map(t => t.startsWith('#') ? t : `#${t}`) : [];
 
-        if (!fileOrFolder) {
-            new Notice(`Snippet path not found: ${snippetPath}`);
+        // Check if there are any configured sources at all
+        if (rawPaths.length === 0 && rawTags.length === 0) {
+            new Notice('No snippet locations or tags provided.');
             return;
         }
 
         const activeFiles: string[] = [];
+        const addFilePrefix = rawPaths.length > 1 || rawTags.length > 0;
 
-        if (fileOrFolder instanceof TFolder) {
-            const markdownFiles = this.getAllMarkdownFiles(fileOrFolder);
-            const addFilePrefix = markdownFiles.length > 1;
+        for (const rawPath of rawPaths) {
+            const fileOrFolder = this.app.vault.getAbstractFileByPath(rawPath);
 
-            // Handle directory: load snippets from all markdown files in the folder
-            for (const file of markdownFiles) {
-                if (file instanceof TFile) {
+            if (!fileOrFolder) {
+                new Notice(`Snippet location not found: ${rawPath}`);
+                continue;
+            }
+
+            if (fileOrFolder instanceof TFolder) {
+                const markdownFiles = this.getAllMarkdownFiles(fileOrFolder);
+                const shouldAddPrefix = addFilePrefix || markdownFiles.length > 1;
+
+                // Handle directory: load snippets from all markdown files in the folder
+                for (const file of markdownFiles) {
                     activeFiles.push(file.path);
-                    await this.loadSnippetsFromFile(file, addFilePrefix);
+                    await this.loadSnippetsFromFile(file, shouldAddPrefix, rawPath);
+                }
+            } else if (fileOrFolder instanceof TFile && fileOrFolder.extension === 'md') {
+                // Handle single file
+                activeFiles.push(fileOrFolder.path);
+                await this.loadSnippetsFromFile(fileOrFolder, addFilePrefix, "");
+            } else {
+                new Notice(`Invalid snippet location: ${rawPath}`);
+            }
+        }
+
+        if (rawTags.length > 0) {
+            const allFiles = this.app.vault.getMarkdownFiles();
+            for (const file of allFiles) {
+                const cache = this.app.metadataCache.getFileCache(file);
+                if (cache) {
+                    const fileTags = getAllTags(cache) || [];
+                    for (const tag of rawTags) {
+                        if (fileTags.includes(tag)) {
+                            // Don't double-process files loaded from paths
+                            if (!activeFiles.includes(file.path)) {
+                                activeFiles.push(file.path);
+                                await this.loadSnippetsFromFile(file, true, "");
+                            }
+                            break; // Avoid processing the same tagged file multiple times if it has multiple matching tags
+                        }
+                    }
                 }
             }
-        } else if (fileOrFolder instanceof TFile && fileOrFolder.extension === 'md') {
-            // Handle single file
-            activeFiles.push(fileOrFolder.path);
-            await this.loadSnippetsFromFile(fileOrFolder, false);
-        } else {
-            new Notice(`Invalid snippet path: ${snippetPath}`);
         }
 
         // Clean up snippets from files that no longer exist or were removed from scope
@@ -130,7 +139,7 @@ export default class SnippetManagerPlugin extends Plugin {
         }
     }
 
-    async loadSnippetsFromFile(file: TFile, addFilePrefix: boolean) {
+    async loadSnippetsFromFile(file: TFile, addFilePrefix: boolean, rootPath: string = "") {
         const filePath = file.path;
         const fileStat = await this.app.vault.adapter.stat(filePath);
         const modifiedTime = fileStat?.mtime;
@@ -141,7 +150,15 @@ export default class SnippetManagerPlugin extends Plugin {
             const contentCache = this.app.metadataCache.getFileCache(file);
 
             // Get snippets for this specific file
-            const filePrefix = addFilePrefix ? this.getRelativePath(file, this.settings.snippetPath) : null;
+            let filePrefix: string | null = null;
+            if (addFilePrefix) {
+                 if (this.settings.showFullPathAsPrefix) {
+                     filePrefix = this.getRelativePath(file, rootPath);
+                 } else {
+                     filePrefix = file.basename;
+                 }
+            }
+
             const newSnippets = this.getSnippets(content, contentCache, filePrefix);
 
             // Should strictly check if content actually changed, but modification time is a good enough proxy for now
