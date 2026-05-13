@@ -78,8 +78,7 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                     fragment.append(createEl('br'));
 
                     const fullPath = `${(this.plugin.app.vault.adapter as FileSystemAdapter).getBasePath()}/${this.plugin.manifest.dir}/alfred-snippets.json`;
-                    const pathSpan = createEl('span', { text: fullPath });
-                    pathSpan.style.userSelect = 'text';
+                    const pathSpan = createSpan({ text: fullPath, cls: 'obsidian-snippets-manager-selectable' });
                     fragment.append(pathSpan);
                 })
             )
