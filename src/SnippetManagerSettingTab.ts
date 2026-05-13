@@ -1,10 +1,10 @@
-import { PluginSettingTab, Setting } from 'obsidian';
+import { PluginSettingTab, Setting, App, FileSystemAdapter } from 'obsidian';
 import SnippetManagerPlugin from './SnippetManagerPlugin';
 
 export default class SnippetManagerSettingTab extends PluginSettingTab {
     plugin: SnippetManagerPlugin;
 
-    constructor(app: any, plugin: SnippetManagerPlugin) {
+    constructor(app: App, plugin: SnippetManagerPlugin) {
         super(app, plugin);
         this.plugin = plugin;
     }
@@ -77,7 +77,7 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                     fragment.appendText('Add the following file in the Alfred workflow configuration. (Just double click and copy the path)');
                     fragment.append(createEl('br'));
 
-                    const fullPath = `${(this.plugin.app.vault.adapter as any).basePath}/${this.plugin.manifest.dir}/alfred-snippets.json`;
+                    const fullPath = `${(this.plugin.app.vault.adapter as FileSystemAdapter).getBasePath()}/${this.plugin.manifest.dir}/alfred-snippets.json`;
                     const pathSpan = createEl('span', { text: fullPath });
                     pathSpan.style.userSelect = 'text';
                     fragment.append(pathSpan);

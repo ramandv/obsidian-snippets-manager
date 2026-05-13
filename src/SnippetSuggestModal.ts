@@ -1,4 +1,4 @@
-import { Editor, FuzzySuggestModal, Notice } from 'obsidian';
+import { Editor, FuzzySuggestModal, Notice, App } from 'obsidian';
 import SnippetManagerPlugin from './SnippetManagerPlugin';
 
 export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
@@ -6,7 +6,7 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
     items: Record<string, string> = {};
     editor: Editor | null;
 
-    constructor(app: any, plugin: SnippetManagerPlugin, editor: Editor | null) {
+    constructor(app: App, plugin: SnippetManagerPlugin, editor: Editor | null) {
         super(app);
         this.plugin = plugin;
         this.editor = editor;
