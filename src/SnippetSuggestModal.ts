@@ -36,37 +36,41 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
         return item;
     }
 
-    async onChooseItem(item: string, evt: KeyboardEvent) {
-        let value = this.plugin.snippets[item];
+    onChooseItem(item: string, evt: KeyboardEvent): void {
+        const processSelection = async () => {
+            let value = this.plugin.snippets[item];
 
-        if (value.includes("<%")) {
-            // @ts-ignore
-            const templater = this.app.plugins.getPlugin('templater-obsidian');
-            if (templater) {
-                const activeFile = this.app.workspace.getActiveFile();
-                if (activeFile) {
-                    // @ts-ignore
-                    value = await templater.templater.parse_template({ target_file: activeFile, run_mode: 4 }, value);
+            if (value.includes("<%")) {
+                // @ts-ignore
+                const templater = this.app.plugins.getPlugin('templater-obsidian');
+                if (templater) {
+                    const activeFile = this.app.workspace.getActiveFile();
+                    if (activeFile) {
+                        // @ts-ignore
+                        value = await templater.templater.parse_template({ target_file: activeFile, run_mode: 4 }, value);
+                    }
                 }
             }
-        }
 
-        navigator.clipboard.writeText(value).then(() => {
-            new Notice(`Copied snippet: ${item}`);
-        }).catch(console.error);
+            navigator.clipboard.writeText(value).then(() => {
+                new Notice(`Copied snippet: ${item}`);
+            }).catch(console.error);
 
-        if (!this.editor) {
-            return;
-        }
+            if (!this.editor) {
+                return;
+            }
 
-        if (this.plugin.settings.useEnterToInsert) {
-            this.insertSnippetAtCursor(value);
-            return;
-        }
+            if (this.plugin.settings.useEnterToInsert) {
+                this.insertSnippetAtCursor(value);
+                return;
+            }
 
-        if (evt.metaKey || evt.ctrlKey) {
-            this.insertSnippetAtCursor(value);
-        }
+            if (evt.metaKey || evt.ctrlKey) {
+                this.insertSnippetAtCursor(value);
+            }
+        };
+
+        processSelection().catch(console.error);
     }
 
     insertSnippetAtCursor(value: string) {
