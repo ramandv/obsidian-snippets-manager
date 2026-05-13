@@ -10,7 +10,7 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
         super(app);
         this.plugin = plugin;
         this.editor = editor;
-        this.refreshSnippets();
+        this.refreshSnippets().catch(console.error);
         this.scope.register(['Mod'], 'Enter', (evt: KeyboardEvent) => {
             if (evt.isComposing) {
                 return;
@@ -53,7 +53,7 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
 
         navigator.clipboard.writeText(value).then(() => {
             new Notice(`Copied snippet: ${item}`);
-        });
+        }).catch(console.error);
 
         if (!this.editor) {
             return;
@@ -75,7 +75,7 @@ export default class SnippetSuggestModal extends FuzzySuggestModal<string> {
     }
 
     onOpen() {
-        super.onOpen();
+        void super.onOpen();
         this.displayInstructions();
     }
 

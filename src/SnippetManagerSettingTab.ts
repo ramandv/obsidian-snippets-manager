@@ -50,7 +50,7 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                     this.plugin.settings.showFullPathAsPrefix = value;
                     await this.plugin.saveSettings();
                     this.plugin.clearSnippets();
-                    this.plugin.loadSnippets();
+                    this.plugin.loadSnippets().catch(console.error);
                 })
             );
 
@@ -90,7 +90,7 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                     if(value) {
                         this.plugin.clearSnippets();
-                        this.plugin.loadSnippets();
+                        this.plugin.loadSnippets().catch(console.error);
                     }
                 })
             );
@@ -124,7 +124,7 @@ export default class SnippetManagerSettingTab extends PluginSettingTab {
                     this.plugin.settings.stripCodeBlockFormatting = value;
                     await this.plugin.saveSettings();
                     this.plugin.clearSnippets();
-                    this.plugin.loadSnippets();
+                    this.plugin.loadSnippets().catch(console.error);
                 })
             );
     }

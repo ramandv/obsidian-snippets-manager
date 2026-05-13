@@ -47,7 +47,7 @@ export default class SnippetManagerPlugin extends Plugin {
 
         // Wait for the layout to be ready before loading snippets
         this.app.workspace.onLayoutReady(() => {
-            this.loadSnippets();
+            this.loadSnippets().catch(console.error);
         });
     }
 
